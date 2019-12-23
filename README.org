@@ -4,7 +4,7 @@ Cuty stands for Cut Ur Titiytainment, not cut ur titty for entertainment.
 
 It's a shell script for Android cell phones that help you quit the addiction to the Social Media on your cell phone.
 
-** [[https://github.com/baohaojun/cuty/raw/master/watch-phone.sh][Script on the phone]]
+** [[https://github.com/baohaojun/cuty/blob/master/watch-phone][Script on the phone]]
 
 The following is a simple script that runs on the phone, in the background.
 
@@ -13,7 +13,7 @@ It works by checking the current focused window, if it is “addictive” (such 
 By default, it checks every 3 minutes, but once you get caught, it will check every 3 seconds for half a minute, in case you might try to “sneak” back into the forbidden App.
 
 #+name: script-on-phone
-#+BEGIN_SRC sh :tangle ~/src/github/cuty/watch-phone.sh :comments link :shebang "#!/system/bin/sh" :noweb yes
+#+BEGIN_SRC sh :tangle ~/src/github/cuty/watch-phone :comments link :shebang "#!/system/bin/sh" :noweb yes
 
   set
   (
@@ -72,9 +72,9 @@ By default, it checks every 3 minutes, but once you get caught, it will check ev
 
 #+END_SRC
 
-** [[https://github.com/baohaojun/cuty/raw/master/start-watching][Script on the PC]]
+** [[https://github.com/baohaojun/cuty/blob/master/start-watching][Script on the PC]]
 
-This script runs on my Linux PC. It is used to start the script on the phone.
+This script runs on my Linux PC. It is used to start the script on the phone. You can also pass the =-u= option if you want to upload a new version of the =watch-phone= script.
 
 #+name: start-watch-phone
 #+BEGIN_SRC sh :tangle ~/src/github/cuty/start-watching :comments link :shebang "#!/bin/bash" :noweb yes
@@ -157,11 +157,11 @@ This script runs on my Linux PC. It is used to start the script on the phone.
 
   if test "${update_script}" = true; then
       adb shell mkdir -p /data/data/com.android.shell/bin/
-      adb push ${abs0%/*}/watch-phone.sh /data/data/com.android.shell/bin/
+      adb push ${abs0%/*}/watch-phone /data/data/com.android.shell/bin/
       my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
   fi
 
-  adb-bg sh /data/data/com.android.shell/bin/watch-phone.sh
+  adb-bg sh /data/data/com.android.shell/bin/watch-phone
 #+END_SRC
 
 ** Additional infomation

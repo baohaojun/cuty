@@ -79,9 +79,9 @@ b0=$(basename $BASH_SOURCE)
 
 if test "${update_script}" = true; then
     adb shell mkdir -p /data/data/com.android.shell/bin/
-    adb push ${abs0%/*}/watch-phone.sh /data/data/com.android.shell/bin/
+    adb push ${abs0%/*}/watch-phone /data/data/com.android.shell/bin/
     my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
 fi
 
-adb-bg sh /data/data/com.android.shell/bin/watch-phone.sh
+adb-bg sh /data/data/com.android.shell/bin/watch-phone
 # start-watch-phone ends here
