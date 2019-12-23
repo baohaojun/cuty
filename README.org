@@ -1,0 +1,165 @@
+* Cuty
+
+Cuty stands for cut ur titiytainment, not cut ur titty for entertainment.
+
+It's 2 shell scripts that help you quit the addiction to the Social Media.
+
+** The script that runs on the phone
+
+The following is a simple script that runs on the phone, in the background.
+
+It works by checking the current focused window, if it is “addictive” (such as weibo, weixin, faceboot, or twitter: it's easily configurable), than it will force you back to your phone's HOME screen, and prompt you to do 10 squats (so that you get rid of a bad habit while also get into a good habit).
+
+By default, it checks every 3 minutes, but once you get caught, it will check every 3 seconds for half a minute, in case you might try to “sneak” back into the forbidden App.
+
+#+name: script-on-phone
+#+BEGIN_SRC sh :tangle ~/.local-config/bin/.watch-phone.sh :comments link :shebang "#!/system/bin/sh" :noweb yes
+
+  set
+  (
+      toast() {
+          am startservice --user 0 -n com.bhj.setclip/.PutClipService --es toast "$1"
+      }
+
+      cd /data/data/com.android.shell/
+      mkdir -p var
+      (
+          flock -n 9 || exit 0
+          sleep_secs=180 # 每次最多玩 3 分钟
+
+          times=0
+          while true; do
+              top_window=$(dumpsys window | sed -n '
+  # {%sed-mode%}
+  /mFocusedWindow=/{s,.* \(.*\)},\1,; p}
+  # {%/sed-mode%}
+  '
+                        )
+              case "$top_window" in
+                  ,*weibo*)
+                      toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
+                      sh /system/bin/input keyevent HOME
+                      sleep_secs=3
+                      times=0
+                      ;;
+                  ,*com.tencent.mm/*)
+                      toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
+                      sh /system/bin/input keyevent HOME
+                      ;;
+                  ,*com.android.chrome/*)
+                      toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
+                      sh /system/bin/input keyevent HOME
+                      sleep_secs=600
+                      ;;
+                  ,*onmyoji*)
+                      toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
+                      sh /system/bin/input keyevent HOME
+                      sleep_secs=600
+                      ;;
+                  ,*)
+                      if let "times++ > 10"; then
+                          sleep_secs=180
+                      else
+                          echo times is $times
+                      fi
+                      ;;
+              esac
+
+              sleep $sleep_secs || true
+          done
+      ) 9> var/watch-my-window.lock
+  )
+
+#+END_SRC
+
+** The script that runs on my PC
+
+This script runs on my Linux PC. It is used to start the script on the phone.
+
+#+name: start-watch-phone
+#+BEGIN_SRC sh :tangle ~/.local-config/bin/watch-phone :comments link :shebang "#!/bin/bash" :noweb yes
+  set -e
+  declare comment_doc=$(
+      cat <<'EOFe9576f8668e0' | grep -v '#.*org-mode%'
+  # {%org-mode%}
+
+  # {%/org-mode%}
+  EOFe9576f8668e0
+          )
+
+  ## start code-generator "^\\s *#\\s *"
+  # generate-getopt -P '?"${comment_doc}"' \
+      # uupdate-script
+  ## end code-generator
+  ## start generated code
+  TEMP=$(POSIXLY_CORRECT=true getopt -o uh \
+                        --long update-script,help,no-update-script \
+                        -n $(basename -- $0) -- "$@")
+  declare update_script=false
+  eval set -- "$TEMP"
+  while true; do
+      case "$1" in
+
+          -u|--update-script|--no-update-script)
+              if test "$1" = --no-update-script; then
+                  update_script=false
+              else
+                  update_script=true
+              fi
+              shift
+
+              ;;
+          -h|--help)
+              set +x
+              echo -e "${comment_doc}"
+              echo
+              echo Options and arguments:
+              printf %06s '-u, '
+              printf %-24s '--[no-]update-script'
+              echo
+              exit
+              shift
+              ;;
+          --)
+              shift
+              break
+              ;;
+          ,*)
+              die "internal error: $(. bt; echo; bt | indent-stdin)"
+              ;;
+      esac
+  done
+
+
+  ## end generated code
+
+  if test "${update_script}" = true; then
+      adb shell mkdir -p /data/data/com.android.shell/bin/
+      adb push ~/src/github/private-config/bin/.watch-phone.sh /data/data/com.android.shell/bin/
+      my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
+  fi
+
+  adb-bg sh /data/data/com.android.shell/bin/.watch-phone.sh
+#+END_SRC
+
+** Additional infomation
+
+*** How to run
+
+To use these scripts, you will need:
+
+- An Android phone
+- Adb must be enable for the phone, root is not required
+- You will need my [[https://github.com/baohaojun/system-config][system-config]] project, in which
+
+  - =adb-bg= is a script that start a program on the phone through adb, but put it running in the background, so that after you disconnect the USB, it continues to run.
+  - =fuser= is from busybox, whose ARM binary is included in system-config, which is used to stop the program when I need to upgrade the phone script
+  - flock is from Android, part of toybox, which is used to make sure only 1 process is running
+
+- You will also need my [[https://github.com/baohaojun/Wrench/][Wrench]] project, with which
+  - I provided an Apk that allow to show Toast from the adb command line
+  - I can start a program through adb every time my phone is connected
+
+*** How to stop it
+
+Reboot your phone☺.
