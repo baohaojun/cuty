@@ -1,19 +1,19 @@
 * Cuty
 
-Cuty stands for cut ur titiytainment, not cut ur titty for entertainment.
+Cuty stands for Cut Ur Titiytainment, not cut ur titty for entertainment.
 
-It's 2 shell scripts that help you quit the addiction to the Social Media.
+It's a shell script for Android cell phones that help you quit the addiction to the Social Media on your cell phone.
 
-** The script that runs on the phone
+** Script on the phone
 
 The following is a simple script that runs on the phone, in the background.
 
-It works by checking the current focused window, if it is “addictive” (such as weibo, weixin, faceboot, or twitter: it's easily configurable), than it will force you back to your phone's HOME screen, and prompt you to do 10 squats (so that you get rid of a bad habit while also get into a good habit).
+It works by checking the current focused window, if it is “addictive” (such as weibo, weixin, facebook, or twitter: you can configure the list yourself), then it will take you back to your phone's HOME screen, and prompt you to do 10 squats (so that you [[https://www.youtube.com/watch?v=N60bMFqkcpU][get rid of a bad habit while also get into a good habit]]).
 
 By default, it checks every 3 minutes, but once you get caught, it will check every 3 seconds for half a minute, in case you might try to “sneak” back into the forbidden App.
 
 #+name: script-on-phone
-#+BEGIN_SRC sh :tangle ~/.local-config/bin/.watch-phone.sh :comments link :shebang "#!/system/bin/sh" :noweb yes
+#+BEGIN_SRC sh :tangle ~/src/github/cuty/watch-phone.sh :comments link :shebang "#!/system/bin/sh" :noweb yes
 
   set
   (
@@ -77,7 +77,7 @@ By default, it checks every 3 minutes, but once you get caught, it will check ev
 This script runs on my Linux PC. It is used to start the script on the phone.
 
 #+name: start-watch-phone
-#+BEGIN_SRC sh :tangle ~/.local-config/bin/watch-phone :comments link :shebang "#!/bin/bash" :noweb yes
+#+BEGIN_SRC sh :tangle ~/src/github/cuty/start-watching :comments link :shebang "#!/bin/bash" :noweb yes
   set -e
   declare comment_doc=$(
       cat <<'EOFe9576f8668e0' | grep -v '#.*org-mode%'
@@ -133,13 +133,35 @@ This script runs on my Linux PC. It is used to start the script on the phone.
 
   ## end generated code
 
+  me=$(readlink -f $BASH_SOURCE)
+  if test ! -e "$me"; then
+      me=$(readlink -f "$(which $BASH_SOURCE)")
+      if test ! -e "$me"; then
+          die "Can't find out about me"
+          exit 1
+      fi
+  fi
+
+  abs0=$BASH_SOURCE
+  if ! [[ $abs0 =~ ^/ ]]; then
+      if [[ $abs0 =~ / ]] && test -e $PWD/$abs0; then
+          abs0=$PWD/$abs0
+      elif test -e "$(which $BASH_SOURCE)"; then
+          abs0=$(which $BASH_SOURCE)
+      else
+          die "Can't find abs path for $BASH_SOURCE"
+      fi
+  fi
+
+  b0=$(basename $BASH_SOURCE)
+
   if test "${update_script}" = true; then
       adb shell mkdir -p /data/data/com.android.shell/bin/
-      adb push ~/src/github/private-config/bin/.watch-phone.sh /data/data/com.android.shell/bin/
+      adb push ${abs0%/*}/watch-phone.sh /data/data/com.android.shell/bin/
       my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
   fi
 
-  adb-bg sh /data/data/com.android.shell/bin/.watch-phone.sh
+  adb-bg sh /data/data/com.android.shell/bin/watch-phone.sh
 #+END_SRC
 
 ** Additional infomation
@@ -149,7 +171,7 @@ This script runs on my Linux PC. It is used to start the script on the phone.
 To use these scripts, you will need:
 
 - An Android phone
-- Adb must be enable for the phone, root is not required
+- Adb must be enable for the phone, root is *NOT* required
 - You will need my [[https://github.com/baohaojun/system-config][system-config]] project, in which
 
   - =adb-bg= is a script that start a program on the phone through adb, but put it running in the background, so that after you disconnect the USB, it continues to run.
