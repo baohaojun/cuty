@@ -4,7 +4,7 @@ Cuty stands for Cut Ur Titiytainment, not cut ur titty for entertainment.
 
 It's a shell script for Android cell phones that help you quit the addiction to the Social Media on your cell phone.
 
-** Script on the phone
+** [[https://github.com/baohaojun/cuty/raw/master/watch-phone.sh][Script on the phone]]
 
 The following is a simple script that runs on the phone, in the background.
 
@@ -72,7 +72,7 @@ By default, it checks every 3 minutes, but once you get caught, it will check ev
 
 #+END_SRC
 
-** The script that runs on my PC
+** [[https://github.com/baohaojun/cuty/raw/master/start-watching][Script on the PC]]
 
 This script runs on my Linux PC. It is used to start the script on the phone.
 
