@@ -4,7 +4,7 @@ Cuty stands for Cut Ur Titiytainment, not cut ur titty for entertainment.
 
 It's a shell script for Android cell phones that help you quit the addiction to the Social Media on your cell phone.
 
-** [[https://github.com/baohaojun/cuty/blob/master/watch-phone][Script on the phone]]
+** [[https://github.com/baohaojun/cuty/blob/master/watch-phone.sh][Script on the phone]]
 
 The following is a simple script that runs on the phone, in the background.
 
@@ -49,18 +49,18 @@ By default, it checks every 3 minutes, but once you get caught, it will check ev
                   ,*com.android.chrome/*)
                       toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                       sh /system/bin/input keyevent HOME
-                      sleep_secs=600
+                      sleep_secs=300
                       ;;
                   ,*onmyoji*)
                       toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                       sh /system/bin/input keyevent HOME
-                      sleep_secs=600
+                      sleep_secs=300
                       ;;
                   ,*)
                       if let "times++ > 10"; then
                           sleep_secs=180
-                      else
-                          echo times is $times
+                          # There is no need to worry that TIMES will
+                          # overflow, I can't live that long.
                       fi
                       ;;
               esac
