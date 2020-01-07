@@ -161,7 +161,7 @@ This script runs on my Linux PC. It is used to start the script on the phone. Yo
       my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
   fi
 
-  adb-bg sh /data/data/com.android.shell/bin/watch-phone
+  adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/watch-phone
 #+END_SRC
 
 ** Additional infomation

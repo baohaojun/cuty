@@ -34,16 +34,18 @@ set
                 *com.android.chrome/*)
                     toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                     sh /system/bin/input keyevent HOME
-                    sleep_secs=180
+                    sleep_secs=300
                     ;;
                 *onmyoji*)
                     toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                     sh /system/bin/input keyevent HOME
-                    sleep_secs=180
+                    sleep_secs=300
                     ;;
                 *)
                     if let "times++ > 10"; then
                         sleep_secs=180
+                        # There is no need to worry that TIMES will
+                        # overflow, I can't live that long.
                     fi
                     ;;
             esac

@@ -83,5 +83,5 @@ if test "${update_script}" = true; then
     my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
 fi
 
-adb-bg sh /data/data/com.android.shell/bin/watch-phone
+adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/watch-phone
 # start-watch-phone ends here
