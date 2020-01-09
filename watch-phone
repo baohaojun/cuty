@@ -28,7 +28,7 @@ set
                     sleep_secs=3
                     times=0
                     ;;
-                *com.tencent.mm/*)
+                *com.tencent.mm/*brandservice.ui.timeline*)
                     toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                     ;;
                 *com.android.chrome/*)
