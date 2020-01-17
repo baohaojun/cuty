@@ -1,19 +1,24 @@
 * Cuty
 
-Cuty stands for Cut Ur Titiytainment, not cut ur titty for entertainment.
+Cuty stands for Cut Ur Tittytainment, not cut ur titty for entertainment.
 
-It's a shell script for Android cell phones that help you quit the addiction to the Social Media on your cell phone.
+It's a shell script for *Android* cell phones that help me quit the addiction to the Social Media on my cell phone.
+
+What's more, in addition to get rid of the bad addiction, it trys to help me create 2 new good habits:
+
+- Remind me to do 10 squats
+- Open Kindle for me, remind me to do some real reading
 
 ** [[https://github.com/baohaojun/cuty/blob/master/watch-phone.sh][Script on the phone]]
 
 The following is a simple script that runs on the phone, in the background.
 
-It works by checking the current focused window, if it is “addictive” (such as weibo, weixin, facebook, or twitter: you can configure the list yourself), then it will take you back to your phone's HOME screen, and prompt you to do 10 squats (so that you [[https://www.youtube.com/watch?v=N60bMFqkcpU][get rid of a bad habit while also get into a good habit]]).
+It works by checking the current focused window, if it is “addictive” (such as weibo, weixin, facebook, or twitter: you can configure the list yourself), then it will take you back to your phone's HOME screen, open Kindle app, and prompt you to do 10 squats (so that you [[https://www.youtube.com/watch?v=N60bMFqkcpU][get rid of a bad habit while also get into a good habit]]).
 
 By default, it checks every 3 minutes, but once you get caught, it will check every 3 seconds for half a minute, in case you might try to “sneak” back into the forbidden App.
 
 #+name: script-on-phone
-#+BEGIN_SRC sh :tangle ~/src/github/cuty/watch-phone :comments link :shebang "#!/system/bin/sh" :noweb yes
+#+BEGIN_SRC sh :tangle ~/src/github/cuty/cuty :comments link :shebang "#!/system/bin/sh" :noweb yes
 
   set
   (
@@ -71,73 +76,11 @@ By default, it checks every 3 minutes, but once you get caught, it will check ev
 
 ** [[https://github.com/baohaojun/cuty/blob/master/start-watching][Script on the PC]]
 
-This script runs on my Linux PC. It is used to start the script on the phone. You can also pass the =-u= option if you want to upload a new version of the =watch-phone= script.
+This script runs on my Linux PC. It is used to start the script on the phone. You can also pass the =-u= option if you want to upload a new version of the =cuty= script.
 
-#+name: start-watch-phone
-#+BEGIN_SRC sh :tangle ~/src/github/cuty/start-watching :comments link :shebang "#!/bin/bash" :noweb yes
+#+name: start-cuty
+#+BEGIN_SRC sh :tangle ~/src/github/cuty/start-cuty :comments link :shebang "#!/bin/bash" :noweb yes
   set -e
-  declare comment_doc=$(
-      cat <<'EOFe9576f8668e0' | grep -v '#.*org-mode%'
-  # {%org-mode%}
-
-  # {%/org-mode%}
-  EOFe9576f8668e0
-          )
-
-  ## start code-generator "^\\s *#\\s *"
-  # generate-getopt -P '?"${comment_doc}"' \
-      # uupdate-script
-  ## end code-generator
-  ## start generated code
-  TEMP=$(POSIXLY_CORRECT=true getopt -o uh \
-                        --long update-script,help,no-update-script \
-                        -n $(basename -- $0) -- "$@")
-  declare update_script=false
-  eval set -- "$TEMP"
-  while true; do
-      case "$1" in
-
-          -u|--update-script|--no-update-script)
-              if test "$1" = --no-update-script; then
-                  update_script=false
-              else
-                  update_script=true
-              fi
-              shift
-
-              ;;
-          -h|--help)
-              set +x
-              echo -e "${comment_doc}"
-              echo
-              echo Options and arguments:
-              printf %06s '-u, '
-              printf %-24s '--[no-]update-script'
-              echo
-              exit
-              shift
-              ;;
-          --)
-              shift
-              break
-              ;;
-          ,*)
-              die "internal error: $(. bt; echo; bt | indent-stdin)"
-              ;;
-      esac
-  done
-
-
-  ## end generated code
-
-  me=$(readlink -f $BASH_SOURCE)
-  if test ! -e "$me"; then
-      me=$(readlink -f "$(which $BASH_SOURCE)")
-      if test ! -e "$me"; then
-          die "Can't find out about me"
-          exit 1
-      fi
-  fi
 
   abs0=$BASH_SOURCE
   if ! [[ $abs0 =~ ^/ ]]; then
@@ -150,15 +93,11 @@ This script runs on my Linux PC. It is used to start the script on the phone. Yo
       fi
   fi
 
-  b0=$(basename $BASH_SOURCE)
+  adb shell mkdir -p /data/data/com.android.shell/bin/
+  adb push ${abs0%/*}/cuty /data/data/com.android.shell/bin/
+  my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
 
-  if test "${update_script}" = true; then
-      adb shell mkdir -p /data/data/com.android.shell/bin/
-      adb push ${abs0%/*}/watch-phone /data/data/com.android.shell/bin/
-      my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
-  fi
-
-  adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/watch-phone
+  adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/cuty
 #+END_SRC
 
 ** Additional infomation
@@ -178,6 +117,11 @@ To use these scripts, you will need:
 - You will also need my [[https://github.com/baohaojun/Wrench/][Wrench]] project, with which
   - I provided an Apk that allow to show Toast from the adb command line
   - I can start a program through adb every time my phone is connected
+
+*** How to start it
+
+1. Make sure your Android phone is connected to PC through adb.
+2. Run =start-cuty=.
 
 *** How to stop it
 
