@@ -31,7 +31,7 @@ set
                 *com.tencent.mm/*brandservice.ui.timeline*)
                     toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                     ;;
-                *com.android.chrome/*)
+                org.mozilla.firefox/*|com.android.chrome/*)
                     toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                     sleep_secs=300
                     ;;
