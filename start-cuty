@@ -14,7 +14,10 @@ if ! [[ $abs0 =~ ^/ ]]; then
 fi
 
 adb shell mkdir -p /data/data/com.android.shell/bin/
-adb push ${abs0%/*}/cuty /data/data/com.android.shell/bin/
+if test $# = 0; then
+    set -- ${abs0%/*}/cuty
+fi
+adb push "${1}" /data/data/com.android.shell/bin/cuty
 my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
 
 adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/cuty
