@@ -20,5 +20,6 @@ fi
 adb push "${1}" /data/data/com.android.shell/bin/cuty
 my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-window.lock || true
 
-adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/cuty
+shift
+adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/cuty "$@"
 # start-cuty ends here
