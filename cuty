@@ -28,7 +28,7 @@ set
                     sleep_secs=3
                     times=0
                     ;;
-                *com.tencent.mm/*brandservice.ui.timeline*)
+                *com.tencent.mm/*brandservice.ui.timeline*|com.weico.*)
                     toast "包昊军，不可以一直玩儿哦，去做 10 个深蹲！"
                     ;;
                 org.mozilla.firefox/*|com.android.chrome/*)
