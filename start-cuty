@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # [[file:~/src/github/cuty/README.org::start-cuty][start-cuty]]
 set -e
 

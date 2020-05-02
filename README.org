@@ -79,7 +79,7 @@ By default, it checks every 3 minutes, but once you get caught, it will check ev
 This script runs on my Linux PC. It is used to start the script on the phone. You can also pass the =-u= option if you want to upload a new version of the =cuty= script.
 
 #+name: start-cuty
-#+BEGIN_SRC sh :tangle ~/src/github/cuty/start-cuty :comments link :shebang "#!/bin/bash" :noweb yes
+#+BEGIN_SRC sh :tangle ~/src/github/cuty/start-cuty :comments link :shebang "#!/usr/bin/env bash" :noweb yes
   set -e
 
   abs0=$BASH_SOURCE
