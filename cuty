@@ -5,7 +5,7 @@ set
     toast() {
         am startservice --user 0 -n com.bhj.setclip/.PutClipService --es toast "$1"
         sh /system/bin/input keyevent HOME
-        am start com.amazon.kindle/.UpgradePage
+        am start --user 10 com.amazon.kindle/.UpgradePage
     }
 
     cd /data/data/com.android.shell/
