@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# [[file:~/src/github/charcon/README.org::start-charcon][start-charcon]]
+set -e
+
+abs0=$BASH_SOURCE
+if ! [[ $abs0 =~ ^/ ]]; then
+    if [[ $abs0 =~ / ]] && test -e $PWD/$abs0; then
+        abs0=$PWD/$abs0
+    elif test -e "$(which $BASH_SOURCE)"; then
+        abs0=$(which $BASH_SOURCE)
+    else
+        die "Can't find abs path for $BASH_SOURCE"
+    fi
+fi
+
+adb shell mkdir -p /data/data/com.android.shell/bin/
+if test $# = 0; then
+    set -- ${abs0%/*}/charcon
+fi
+adb push "${1}" /data/data/com.android.shell/bin/charcon
+my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-battery.lock || true
+
+shift
+adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/charcon "$@"
+# start-charcon ends here

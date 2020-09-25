@@ -1,0 +1,29 @@
+#!/system/bin/sh
+# [[file:~/src/github/cuty/README.org::script-on-phone][script-on-phone]]
+set
+(
+    toast() {
+        am startservice --user 0 -n com.bhj.setclip/.PutClipService --es toast "$1"
+    }
+
+    cd /data/data/com.android.shell/
+    mkdir -p var
+    (
+        flock -n 9 || exit 0
+        sleep_secs=180
+
+        while true; do
+            capa=$(cat /sys/class/power_supply/battery/capacity)
+            if let "capa < 15"; then
+                echo 0 > /sys/class/power_supply/battery/input_suspend
+            elif let "capa > 95"; then
+                echo 1 > /sys/class/power_supply/battery/input_suspend
+            else
+                true toast "capa is $capa"
+            fi
+
+            sleep $sleep_secs || true
+        done
+    ) 9> var/watch-my-battery.lock
+)
+# script-on-phone ends here
