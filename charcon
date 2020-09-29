@@ -6,6 +6,10 @@ set
         am startservice --user 0 -n com.bhj.setclip/.PutClipService --es toast "$1"
     }
 
+    log() {
+        echo "$(date): $*" >> /sdcard/charcon.txt
+    }
+
     cd /data/data/com.android.shell/
     mkdir -p var
     (
@@ -16,10 +20,14 @@ set
             capa=$(cat /sys/class/power_supply/battery/capacity)
             if let "capa < 15"; then
                 echo 0 > /sys/class/power_supply/battery/input_suspend
+                log "cap is $capa, suspend is 0"
+
             elif let "capa > 95"; then
                 echo 1 > /sys/class/power_supply/battery/input_suspend
+                log "cap is $capa, suspend is 1"
             else
                 true toast "capa is $capa"
+                log "cap is $capa, suspend is $(cat /sys/class/power_supply/battery/input_suspend)"
             fi
 
             sleep $sleep_secs || true

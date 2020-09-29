@@ -21,5 +21,5 @@ adb push "${1}" /data/data/com.android.shell/bin/charcon
 my-adb sc-shell fuser -k /data/data/com.android.shell/var/watch-my-battery.lock || true
 
 shift
-adb-bg -l nohup.wp sh /data/data/com.android.shell/bin/charcon "$@"
+adb-bg -l nohup.cc sh /data/data/com.android.shell/bin/charcon "$@"
 # start-charcon ends here
