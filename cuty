@@ -16,6 +16,10 @@ set
 
         times=0
         while true; do
+            if test -e "/sdcard/no-cuty"; then
+                rm /sdcard/no-cuty -f
+                exit
+            fi
             top_window=$(dumpsys window | sed -n '
 # {%sed-mode%}
 /mFocusedWindow=/{s,.* \(.*\)},\1,; p}
