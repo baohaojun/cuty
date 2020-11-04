@@ -18,10 +18,18 @@ set
 
         while true; do
             capa=$(cat /sys/class/power_supply/battery/capacity)
+            status=$(cat /sys/class/power_supply/battery/status)
             if let "capa < 15"; then
                 echo 0 > /sys/class/power_supply/battery/input_suspend
-                log "cap is $capa, suspend is 0"
+                sleep 1
+                if test "$(cat /sys/class/power_supply/battery/status)" = 'Not charging'; then
+                    echo 1 > /sys/class/power_supply/battery/input_suspend
+                    sleep 1
+                    echo 0 > /sys/class/power_supply/battery/input_suspend
+                    log "tried to restart charging"
+                fi
 
+                log "cap is $capa, status is $status, suspend is 0"
             elif let "capa > 95"; then
                 echo 1 > /sys/class/power_supply/battery/input_suspend
                 log "cap is $capa, suspend is 1"
